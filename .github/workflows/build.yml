@@ -20,18 +20,27 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Pembersihan Paksa Resource
+      - name: Pembersihan Total Resource Ilegal
         run: |
-          # Pastikan tidak ada lagi file dengan simbol $
-          find app/src/main/res/ -name "*$*" -exec bash -c 'mv "$1" "${1//$/_}"' -- {} \; || echo "Tidak ada file $ ditemukan"
+          echo "Mulai membersihkan resource bermasalah..."
           
-          # Ganti teks rujukan di dalam file XML secara otomatis
-          find app/src/main/res/ -type f -name "*.xml" -exec sed -i 's/\$avd/avd/g' {} +
+          # 1. Cari semua file yang mengandung '$' dan hapus/ganti namanya secara otomatis
+          find . -name "*$*" -path "*/src/main/res/*" | while read file; do
+            new_file=$(echo "$file" | sed 's/\$/_/g')
+            mv "$file" "$new_file"
+            echo "Berhasil memperbaiki file: $file -> $new_file"
+          done
           
-      - name: Build Bersih (Clean Build)
-        run: |
-          chmod +x gradlew
-          ./gradlew clean assembleDebug --stacktrace
+          # 2. Ganti semua teks di dalam file XML yang masih memanggil simbol '$'
+          find . -type f -name "*.xml" -path "*/src/main/res/*" -exec sed -i 's/\$avd/_avd/g' {} +
+          
+          echo "Pembersihan selesai."
+
+      - name: Beri izin eksekusi gradlew
+        run: chmod +x gradlew
+
+      - name: Build APK Debug (Clean Build)
+        run: ./gradlew clean assembleDebug --stacktrace
 
       - name: Upload APK
         if: success()
@@ -39,4 +48,3 @@ jobs:
         with:
           name: debug-apk
           path: app/build/outputs/apk/debug/*.apk
-          
