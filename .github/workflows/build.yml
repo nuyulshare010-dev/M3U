@@ -23,9 +23,10 @@ jobs:
 
       - name: Perbaiki Nama Resource Ilegal
         run: |
-          # Perintah ini mencari file dengan karakter $ dan menggantinya dengan underscore _
-          # Agar tidak menyebabkan error 'not a valid file-based resource name character'
+          echo "Mencari file dengan karakter ilegal..."
+          # Mencari file yang mengandung '$' di folder res dan mengubahnya menjadi '_'
           find app/src/main/res/ -name "*$*" -exec bash -c 'mv "$1" "${1//$/_}"' -- {} \;
+          echo "Perbaikan selesai."
 
       - name: Beri izin eksekusi gradlew
         run: chmod +x gradlew
