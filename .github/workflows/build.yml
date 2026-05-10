@@ -21,16 +21,18 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
-      - name: Bersihkan resource ilegal
+      - name: Perbaiki Nama Resource Ilegal
         run: |
-          find app/src/main/res/ -name "*$*" -delete || true
+          # Perintah ini mencari file dengan karakter $ dan menggantinya dengan underscore _
+          # Agar tidak menyebabkan error 'not a valid file-based resource name character'
+          find app/src/main/res/ -name "*$*" -exec bash -c 'mv "$1" "${1//$/_}"' -- {} \;
 
-      - name: Beri izin eksekusi
+      - name: Beri izin eksekusi gradlew
         run: chmod +x gradlew
 
       - name: Build APK Debug
         run: ./gradlew assembleDebug --stacktrace
-        
+
       - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
