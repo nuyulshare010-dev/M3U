@@ -1,4 +1,4 @@
-name: Android CI Fix Total
+name: Android CI Final Fix
 
 on:
   workflow_dispatch:
@@ -19,26 +19,24 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
-      - name: Bersihkan File Ilegal dan Fix Macro
+      - name: Bersihkan Resource dan Cache
         run: |
-          echo "Menghapus paksa file duplikat/ilegal..."
-          # Cari dan hapus file yang mengandung $ secara permanen sebelum build
-          find . -name "*$*" -path "*/src/main/res/*" -delete
+          # Hapus paksa file dengan karakter ilegal $
+          find . -name "*$*" -delete
           
-          # Perbaiki referensi teks di XML agar tidak mencari file $ lagi
-          find . -type f -name "*.xml" -path "*/src/main/res/*" -exec sed -i 's/\$avd/_avd/g' {} +
+          # Perbaiki referensi teks ilegal di file XML
+          find . -type f -name "*.xml" -exec sed -i 's/\$avd/avd/g' {} +
           
-          echo "Pembersihan selesai."
+          # Hapus cache gradle yang mungkin menyimpan library yang korup
+          rm -rf ~/.gradle/caches/
+          echo "Pembersihan cache selesai."
 
       - name: Beri izin eksekusi gradlew
         run: chmod +x gradlew
 
       - name: Build APK Clean
-        run: |
-          # Menggunakan --no-daemon untuk mencegah file lama muncul kembali di memory
-          ./gradlew clean assembleDebug --stacktrace --no-daemon
+        run: ./gradlew clean assembleDebug --stacktrace --no-daemon
 
       - name: Upload APK
         if: success()
@@ -46,3 +44,4 @@ jobs:
         with:
           name: debug-apk
           path: app/build/outputs/apk/debug/*.apk
+          
