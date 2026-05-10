@@ -1,4 +1,4 @@
-name: Android CI Fix Gradlew
+name: Android CI Final Fix
 
 on:
   workflow_dispatch:
@@ -14,30 +14,28 @@ jobs:
       - name: Checkout kode
         uses: actions/checkout@v4
 
-      - name: Setup JDK 17
+      - name: Setup JDK 11
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '11'
 
-      - name: Generate Gradlew & Bersihkan Resource
+      - name: Reset Gradle dan Bersihkan Resource
         run: |
-          # 1. Pasang ulang Gradle Wrapper jika hilang
-          gradle wrapper
+          # 1. Paksa gunakan Gradle Wrapper versi stabil (7.3.3)
+          gradle wrapper --gradle-version 7.3.3
           chmod +x gradlew
           
-          # 2. Hapus paksa file yang mengandung karakter ilegal $
-          find . -name "*$*" -delete
+          # 2. Hapus paksa semua file yang mengandung karakter $ (File Hantu)
+          find . -name "*$*" -path "*/src/main/res/*" -delete
           
-          # 3. Sinkronkan teks referensi di XML
-          find . -type f -name "*.xml" -exec sed -i 's/\$avd/avd/g' {} +
+          # 3. Perbaiki referensi teks di XML secara otomatis
+          find . -type f -name "*.xml" -path "*/src/main/res/*" -exec sed -i 's/\$avd/avd/g' {} +
           
-          echo "Gradlew telah dibuat dan resource dibersihkan."
+          echo "Pembersihan selesai, menggunakan Gradle 7.3.3"
 
-      - name: Build APK Clean
-        run: |
-          # Pastikan compileSdk di build.gradle adalah 34
-          ./gradlew clean assembleDebug --stacktrace --no-daemon --no-build-cache
+      - name: Build APK Debug
+        run: ./gradlew clean assembleDebug --stacktrace --no-daemon
 
       - name: Upload APK
         if: success()
@@ -45,4 +43,3 @@ jobs:
         with:
           name: debug-apk
           path: app/build/outputs/apk/debug/*.apk
-          
