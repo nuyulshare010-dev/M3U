@@ -21,9 +21,9 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
-      - name: Hapus file dollar otomatis
+      - name: Bersihkan resource ilegal
         run: |
-          find app/src/main/res/drawable/ -name "*$*" -delete || true
+          find app/src/main/res/ -name "*$*" -delete || true
 
       - name: Beri izin eksekusi
         run: chmod +x gradlew
