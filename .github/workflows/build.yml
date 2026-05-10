@@ -1,4 +1,4 @@
-name: Android CI Debug Clear
+name: Android CI Clear & Build
 
 on:
   workflow_dispatch:
@@ -20,33 +20,34 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      - name: Eksekusi Penghapusan Resource Bermasalah
+      - name: Pembersihan Folder Duplikat (Verbose)
         run: |
-          echo "Mulai membersihkan resource yang menyebabkan error..."
+          echo "Menghancurkan folder yang menyebabkan duplikasi..."
           
-          # 1. Hapus folder drawable-ldrtl yang menyebabkan error mv (dengan log terlihat)
+          # Hapus folder drawable-ldrtl secara total (Penyebab utama error mv)
           rm -rfv ./app/src/main/res/drawable-ldrtl-xhdpi
           rm -rfv ./app/src/main/res/drawable-ldrtl-hdpi
           rm -rfv ./app/src/main/res/drawable-ldrtl-mdpi
           
-          # 2. Hapus file hantu $avd di folder anydpi (dengan log terlihat)
-          rm -fv ./app/src/main/res/drawable-anydpi-v21/\$*
+          # Hapus file hantu $ di folder anydpi
+          find ./app/src/main/res/ -name "*$*" -delete -print
           
-          # 3. Hapus folder build lama jika terbawa dari lokal
+          # Hapus sisa-sisa build dari lokal
           rm -rfv ./app/build
           rm -rfv ./.gradle
           
-          echo "Pembersihan total selesai."
+          echo "Isi folder drawable sekarang:"
+          ls -R ./app/src/main/res/drawable* || echo "Folder drawable kosong/tidak ada"
 
-      - name: Pasang Gradle 7.3.3 & Build
+      - name: Build dengan Gradle 7.3.3
         run: |
-          # Menggunakan Gradle sistem untuk menghindari masalah izin gradlew
+          # Unduh Gradle manual untuk bypass sistem GitHub
           wget -q https://services.gradle.org/distributions/gradle-7.3.3-bin.zip
           unzip -q gradle-7.3.3-bin.zip
           export PATH=$PATH:$(pwd)/gradle-7.3.3/bin
           
-          # Jalankan build bersih
-          gradle clean assembleDebug --stacktrace --no-daemon
+          # Kompilasi Bersih
+          gradle clean assembleDebug --stacktrace --no-daemon --no-build-cache
 
       - name: Upload APK
         if: success()
@@ -54,4 +55,3 @@ jobs:
         with:
           name: debug-apk
           path: app/build/outputs/apk/debug/*.apk
-          
