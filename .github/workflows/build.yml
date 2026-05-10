@@ -1,4 +1,4 @@
-name: Android CI Fix
+name: Android CI Fix Total
 
 on:
   workflow_dispatch:
@@ -19,23 +19,26 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+          cache: 'gradle'
 
-      - name: Perbaiki Gradlew dan Resource
+      - name: Bersihkan File Ilegal dan Fix Macro
         run: |
-          # 1. Perbaiki file gradlew yang rusak (Line endings & Permissions)
-          sed -i 's/\r$//' gradlew
-          chmod +x gradlew
+          echo "Menghapus paksa file duplikat/ilegal..."
+          # Cari dan hapus file yang mengandung $ secara permanen sebelum build
+          find . -name "*$*" -path "*/src/main/res/*" -delete
           
-          # 2. Hapus sisa-sisa file $ ilegal jika masih ada
-          find . -name "*$*" -path "*/src/main/res/*" -exec bash -c 'mv "$1" "${1//$/_}"' -- {} \;
-          
-          # 3. Sinkronkan referensi teks di XML
+          # Perbaiki referensi teks di XML agar tidak mencari file $ lagi
           find . -type f -name "*.xml" -path "*/src/main/res/*" -exec sed -i 's/\$avd/_avd/g' {} +
           
-          echo "Perbaikan Gradlew dan Resource selesai."
+          echo "Pembersihan selesai."
+
+      - name: Beri izin eksekusi gradlew
+        run: chmod +x gradlew
 
       - name: Build APK Clean
-        run: ./gradlew clean assembleDebug --stacktrace
+        run: |
+          # Menggunakan --no-daemon untuk mencegah file lama muncul kembali di memory
+          ./gradlew clean assembleDebug --stacktrace --no-daemon
 
       - name: Upload APK
         if: success()
