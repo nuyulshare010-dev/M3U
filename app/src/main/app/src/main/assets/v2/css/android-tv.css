@@ -1,0 +1,17 @@
+/* Copyright 2023 - Herber eDevelopment - Jaroslav Herber */
+
+#channel_number {
+	font-size: 100px;
+}
+
+#search_button_hint {
+	display: none;
+}
+
+body {
+	background: transparent !important;
+}
+
+.group-filter #search_field {
+	
+}

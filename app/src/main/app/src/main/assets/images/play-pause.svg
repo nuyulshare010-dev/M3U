@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg">
+	<symbol id="playpause" viewBox="0 0 512 512">
+		<polygon points="64,60 64,340 200,200"/>
+		<rect x="320" y="290" width="50" height="160" rx="16"/>
+		<rect x="400" y="290" width="50" height="160" rx="16"/>
+		<line x1="50" y1="460" x2="460" y2="50" stroke-width="32" stroke-linecap="round"/>
+	</symbol>
+</svg>

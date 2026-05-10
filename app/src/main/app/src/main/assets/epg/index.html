@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="referrer" content="no-referrer" />
+	<title>M3U IPTV EPG</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="author" content="Jaroslav Herber - Herber eDevelopment">
+	<link rel="icon" type="image/x-icon" href="../favicon.ico">
+
+	<link rel="stylesheet" type="text/css" href="css/epg-overview.css"/>
+	<script>var sAppVersion = '3.0.12', sDeviceFamily = 'Android', sView = 'epg';</script>
+	<style id="custom_theme"></style><style id="custom_styles"></style>
+
+	<script src="js/lang.js"></script>
+</head>
+<body id="body" class="android booting">
+	<div id='boot_loader' class="fullscreen">
+		<div id="boot_status"></div>
+	</div>
+
+	<div id="epg_closer" class="close-button" onclick="hideEpgOverview();"></div>
+
+	<div id="epg_details"></div>
+
+	<div id="epg_overview">
+		<div id="epg_overview_table" class="custom-scrollbar">
+			<div id="epg_channels"></div>
+			<div id="epg_programme" class="custom-scrollbar">
+				<div id="crosshair"></div>
+				<div id="epg_timeline">
+					<div id="epg_scroller_right">▶</div><div id="epg_scroller_left">◀</div>
+					<div id="epg_timestamp_container">
+						<div id="epg_current_timeline">
+							<div id="current_time"></div>
+							<div id="epg_current_time_mark"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="modal" class="fullscreen-blur" onclick="hideModal();">
+		<div id="modal_content" class="fullscreen-popup fullscreen-center custom-scrollbar"></div>
+	</div>
+	<script type='text/javascript' src="../js/functions.js"></script>
+	<script type='text/javascript' src="js/settings.js"></script>
+	<script type='text/javascript' src="js/controls.js"></script>
+	<script type='text/javascript' src="js/epg-overview.js"></script>
+
+	<div id="js_updates" style="display: none"></div>
+	<script>
+		try {
+			AppSettings.init();
+			bootEpgView();
+		} catch( e ) { console.log(e); }
+	</script>
+
+</body>
+</html>

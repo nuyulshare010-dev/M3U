@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="referrer" content="no-referrer" />
+	<title>M3U IPTV Groups</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="author" content="Jaroslav Herber - Herber eDevelopment">
+
+	<link rel="stylesheet" type="text/css" href="css/groups.css"/>
+	<script>var sAppVersion = '3.1.0', sDeviceFamily = 'Android', sView = 'groups';</script>
+	<style id="custom_theme"></style><style id="custom_styles"></style>
+
+	<script src="js/lang.js"></script>
+</head>
+<body id="body" class="android">
+	<div id='boot_loader' class="fullscreen">
+		<div id="boot_status"></div>
+	</div>
+	<div id="stars"></div>
+	<div id="editor_closer" class="close-button" onclick="closeGroupsEditor()"></div>
+
+	<div id="groups_editor">
+
+		<!--h2 id="list_headline"></h2-->
+		<div id="breadcrumb"></div>
+
+		<div id="list_container_scrollarea">
+			<div id="list_container">
+				<div class="list active" id="edit_type_list">
+					<ul>
+						<li data-action="edit-groups" class="selected">Edit playlist groups</li>
+						<li data-action="edit-playlist-favs">Edit playlist favorites</li>
+						<li data-action="edit-global-favs">Edit global favorites</li>
+					</ul>
+				</div>
+
+				<div class="list" id="playlists_list"></div>
+				<div class="list" id="groups_list"></div>
+				<div class="list" id="favs_list"></div>
+				<div class="list" id="channel_list">
+					<ul id="channel_list_ul"></ul>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<div id="context_menu" class="fullscreen">
+		<div class="fullscreen-background" onclick="hideContextMenu();"></div>
+		<div class="context-menu fullscreen-popup fullscreen-center">
+			<div id="context_headline"><div id="context_channel_headline"><span class="list-ch">1</span> <span id="context_menu_title" onclick="showRenameInput(0);" class="list-title">Channel name</span><div class="nav_logo"></div></div></div>
+			<div class="HR"></div>
+			<ul id="context_channel_nav">
+				<li id="context-rename" class="i18n selected" data-langid="context-rename">Rename</li>
+				<li id="context-move" class="i18n" data-langid="context-move">Move</li>
+				<li id="context-add-fav" class="i18n" data-langid="channelSettingFavs">Add to Favorites</li>
+				<li id="context-protect" class="i18n" data-langid="context-protect">Protect</li>
+				<li id="context-delete" class="i18n" data-langid="context-delete">Delete</li>
+			</ul>
+		</div>
+	</div>
+
+	<div id="modal" class="fullscreen-blur" onclick="hideModal();">
+		<div id="modal_content" class="fullscreen-popup fullscreen-center custom-scrollbar"></div>
+	</div>
+	<script type='text/javascript' src="../js/functions.js"></script>
+	<script type='text/javascript' src="js/settings.js"></script>
+	<script type='text/javascript' src="js/controls.js"></script>
+	<script type='text/javascript' src="js/groups.js"></script>
+
+	<div id="js_updates" style="display: none"></div>
+	<script>
+		try {
+			AppSettings.init();
+			bootGroupsView();
+		} catch( e ) { console.log(e); }
+	</script>
+
+</body>
+</html>

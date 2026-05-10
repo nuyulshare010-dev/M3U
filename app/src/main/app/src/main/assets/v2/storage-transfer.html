@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>M3U IPTV Storage transfer</title>
+</head>
+<body>
+<script>
+    function exportLocalStorage() {
+        //return JSON.stringify(Object.assign({}, localStorage));
+        return JSON.stringify((function(obj) {
+            for( var key in localStorage ) {
+                if( localStorage.hasOwnProperty(key) ) {
+                    obj[key] = localStorage[key];
+                }
+            }
+            return obj;
+        })({}));
+    }
+</script>
+</body>
+</html>

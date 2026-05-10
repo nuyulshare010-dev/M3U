@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" baseProfile="full" viewBox="30 30 452 452">
+<!--circle cx="256" cy="256" fill="black" r="240" /-->
+<circle cx="256" cy="256" fill="white" r="120" />
+<polygon fill="white" points="256,60 236,100 276,100" />
+<polygon fill="white" points="256,452 236,412 276,412" />
+<polygon fill="white" points="60,256 100,236 100,276" />
+<polygon fill="white" points="452,256 412,236 412,276" />
+</svg>

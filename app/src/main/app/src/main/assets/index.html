@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>M3U IPTV</title>
+	<meta name="viewport" content="width=device-width, initial-scale=0.7, user-scalable=no" />
+	<meta name="description" content="Stream your favorite TV m3u-playlist seamlessly with our feature-rich M3U IPTV browser app. It is completely free and easy to use!">
+	<meta name="keywords" content="IPTV, M3U, M3U8, M3U IPTV, Player, Live, TV, Movie, Video, Smart, Smart TV, Online, Playlist, Browser, Desktop, Mobile, Smartphone, free, easy, ad-free">
+	<meta name="author" content="Jaroslav Herber - Herber eDevelopment">
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
+
+	<script>var sAppVersion = '3.0.12', sDeviceFamily = 'Android', sView = 'home';</script>
+	<style>
+		html, body {
+			margin: 0;
+			padding: 0;
+			height: 100%;
+			width: 100%;
+			color: #fff;
+			background: #000;
+			box-sizing: border-box;
+			font-family: sans-serif;
+			line-height: 1.5;
+		}
+
+		#stars {
+			display: none;
+			width: 2px;
+			height: 2px;
+			position: absolute;
+			box-shadow: 2vw 5vh 2px white, 10vw 9vh 2px white, 7vw 16vh 1px white,
+				22vw 22vh 1px white, 28vw 12vh 2px white, 29vw 39vh 1px white,
+				39vw 6vh 2px white, 42vw 35vh 1px white, 49vw 27vh 2px white,
+				53vw 42vh 1px white, 58vw 15vh 2px white, 63vw 50vh 1px white,
+				65vw 31vh 2px white, 73vw 45vh 1px white, 82vw 35vh 2px white,
+				90vw 51vh 1px white, 88vw 9vh 1px white, 96vw 63vh 1px white,
+				88vw 40vh 1px white, 7vw 63vh 1px white, 14vw 39vh 2px white,
+				16vw 67vh 1px white, 25vw 73vh 2px white, 31vw 58vh 1px white,
+				35vw 74vh 2px white, 40vw 68vh 1px white, 46vw 54vh 2px white,
+				52vw 14vh 1px white, 55vw 58vh 2px white, 64vw 71vh 3px white,
+				66vw 10vh 2px white, 70vw 26vh 1px white, 77vw 15vh 2px white,
+				80vw 64vh 2px white, 74vw 60vh 1px white, 90vw 17vh 1px white,
+				96vw 34vh 2px white;
+		}
+
+		#playlist_hint {
+			display: none;
+			text-align: center;
+			width: 80%;
+			position: absolute;
+			left: 50%; top: 46%;
+			transform: translate(-50%, -50%);
+			background: #151e29;
+			padding: 12px 20px;
+		}
+
+		#hint_previous {
+			display: none;
+		}
+
+		#body #playlist_hint, #body #stars {
+			display: block;
+		}
+
+		a {
+			border: 0;
+			padding: 18px 24px;
+			margin: 12px auto;
+			background-color: #118599;
+			box-shadow: 0 0 12px #111;
+			color: #fff;
+			cursor: pointer;
+			display: inline-block;
+			box-sizing: border-box;
+			text-decoration: none;
+			font-size: 120%;
+		}
+
+		#loader {
+			background: #000 url(images/loading-circle.svg) no-repeat 50% 50%;
+			background-size: 100px;
+		}
+	</style>
+	<script src="js/lang-home.js"></script>
+</head>
+<body id="loader">
+	<div id="stars"></div>
+	<noscript>
+		<p>Please enable JavaScript!</p>
+	</noscript>
+	<div id="playlist_hint">
+		<p id="hint" class="i18n" data-langid="hint">
+			M3U IPTV is a player app that does not provide its own channels or content.<br>
+			To watch channels, you need to add an M3U playlist from your IPTV provider.
+		</p>
+		<p id="hint_previous" class="i18n" data-langid="previous-version-hint">
+			<b>Used version 2 of the M3U IPTV app before?</b><br>
+			You can import your last loaded playlist from <b>Settings » Playlists » Add Playlist</b>.<br>
+			To switch back to the previous player, go to <b>Settings » General » Switch to old app version 2</b>.
+		</p>
+		<a id="add_playlist" href="settings/index.html#add_playlist" class="i18n" data-langid="add">Add playlist</a>
+	</div>
+<script>
+
+if( typeof(m3uConnector) === 'object' ) {
+	m3uConnector.loadSuccess();
+	window.scrollTop = 0;
+}
+
+localStorage.setItem('deviceStartup', 1);
+localStorage.removeItem('channelProtection');
+localStorage.removeItem('iSecondsUntilAd');
+
+if( localStorage.getItem('bLoadV2') === "1" ) {
+	window.location.href = "v2/index.html";
+} else if( localStorage.getItem('bReadyForPlay') === "1" ) {
+	window.location.href = "player/index.html";
+} else {
+
+	applyLang();
+
+	if( localStorage.getItem('sChannelListStorage') ) {
+		document.getElementById('hint_previous').style.display = 'block';
+	}
+
+	document.body.id = 'body';
+
+	var bConfirmBoxOpened = false;
+	document.addEventListener('keydown', function(e) {
+		var k = e.keyCode;
+		switch( k ) {
+			case 13:
+				document.body.id = 'loader';
+				document.getElementById('add_playlist').click();
+				break;
+
+			case 999:	// Android Back-Button
+			case 10009: // RETURN Samsung
+			case 27:	// ESC
+			case 461:	// LG Back
+			case 113:	// F2 - backbutton in android
+				closeApp(); break;
+		}
+	});
+}
+
+
+function closeApp() {
+
+	try {
+		switch( sDeviceFamily ) {
+			case 'Samsung':
+				tizen.application.getCurrentApplication().exit();
+				break;
+			case 'LG':
+				window.PalmSystem.platformBack();
+				break;
+			case 'Android':
+				m3uConnector.closeApp();
+				break;
+		}
+	} catch( e ) {
+		console.log(e.message);
+	}
+
+}
+
+</script>
+</body>
+</html>

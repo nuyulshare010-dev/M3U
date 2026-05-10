@@ -1,0 +1,79 @@
+/* Copyright 2024 - Herber eDevelopment - Jaroslav Herber */
+
+.form-row select,
+.submit-row button {
+	width: 330px;
+}
+
+.submit-row {
+	padding: 12px 0 6px 427px;
+}
+
+.form-row .input {
+	display: inline-block;
+}
+
+.en-prog .p-i {
+	width: 450px;
+	font-size: 24px;
+	height: 50px;
+    line-height: 50px;
+}
+
+.en-prog .p-i:before {
+	border-top: 25px solid transparent;
+	border-bottom: 25px solid transparent;
+}
+
+#group_list li, #channel_list li, #channel_settings li {
+	height: 50px;
+	line-height: 50px;
+}
+
+#epg_nav_list li {
+	height: 50px;
+	padding: 5px 0;
+}
+
+#channel_list .nav_logo img {
+	max-height: 48px;
+}
+
+#epg_nav_time {
+    top: 25px;
+    padding: 6px 10px;
+    font-size: 28px;
+}
+
+#epg_nav_list_container {
+	width: 1200px;
+}
+
+#nav {
+	width: 600px;
+}
+
+#list_container {
+	width: 1200px;
+	transform: translateX(-600px);
+}
+
+
+/* Bigger size - custom */
+#channel_info,
+#channel_input {
+	font-size: 46px;
+	width: 40%;
+}
+
+#channel_prev, #channel_next {
+	font-size: 38px;
+}
+
+#channel_number {
+	font-size: 100px;
+}
+
+.group-filter #search_field {
+	width: 324px !important;
+}

@@ -1,0 +1,231 @@
+/* Copyright 2023 - Herber eDevelopment - Jaroslav Herber */
+
+body {
+	background-color: transparent !important;
+}
+
+.close-button {
+	top: 14px;
+	right: 50px;
+}
+
+#loader {
+	background-position: 10% 50%;
+}
+
+.fullscreen {
+	min-height: 20px;
+}
+
+	.fullscreen-popup {
+		padding: 20px;
+		min-height: 200px;
+	}
+
+#settings, #guide {
+	display: none;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	min-height: auto;
+	overflow: auto;
+	padding: 0;
+	color: #fff;
+	background: linear-gradient(to bottom, rgba(0,100,100,0.1) 0%, rgba(0,0,0,0.4) 100%), radial-gradient(at top center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 120%) #989898;
+	background-blend-mode: multiply,multiply;
+}
+
+	#settings a, #guide a {
+		color: #fff;
+	}
+
+#custom_confirm_content, #channel_error_content, #modal_content {
+	font-size: 18px;
+}
+
+#settings_form, #guide_content {
+	margin: auto;
+	padding: 2% 3%;
+	max-width: 600px;
+}
+
+#settings_form {
+	max-width: 900px;
+}
+
+	#settings_form .form-row,
+	#settings_form .submit-row {
+		max-width: 680px;
+		margin: auto;
+	}
+
+#guide_content {
+	max-width: 1000px;
+}
+
+    #guide_content p {
+        margin-top: 6px;
+    }
+
+.form-row label {
+	width: auto;
+	text-align: left;
+	padding: 4px 0 4px 0;
+	display: block;
+}
+
+.form-row input, .form-row select, .form-row button, .submit-row button {
+	width: 100%;
+}
+
+.submit-row {
+	padding: 26px 0 0 0;
+}
+
+#favourites_group,
+#channel_prev, #channel_next,
+#search_button_hint {
+	display: none;
+}
+
+#nav,
+#channel_group,
+#channel_epg,
+#channel_settings {
+	font-size: 20px;
+}
+
+#channel_info,
+#channel_input {
+	font-size: 30px;
+	min-height: 180px;
+	width: 40%;
+}
+
+#channel_number {
+	font-size: 60px;
+}
+
+.list-ch {
+	min-width: 30px;
+}
+
+#ch_logo {
+	max-width: 140px;
+	max-height: 140px;
+	margin: 0 30px 0 0;
+}
+
+#search_input {
+	height: 70px;
+	width: 340px;
+}
+
+#search_field,
+#search_field:disabled {
+	margin-top: 12px !important;
+	font-size: 20px;
+	width: 340px !important;
+}
+
+#epg_nav_list_container,
+#list_container_scrollarea,
+#list_container_right_scrollarea {
+	padding-top: 70px;
+}
+
+#confirm_yes {
+	margin-bottom: 10px !important;
+}
+
+#epg_container {
+    max-height: 70%;
+}
+
+.controls .control-item {
+    height: 50px;
+    width: 50px;
+}
+
+#custom_controls {
+    position: absolute;
+    z-index: 3;
+    bottom: 10px; left: 0;
+    height: 20%;
+}
+
+#settings_tabs {
+    display: flex;
+}
+
+.form-row .input {
+	display: inline-block;
+}
+
+#epg_nav_list_container {
+	width: 800px;
+}
+
+#nav, #channel_settings {
+	width: 400px;
+}
+
+#channel_settings {
+	transform: translateX(800px);
+}
+
+#list_container,
+#list_container_right {
+	width: 800px;
+	transform: translateX(-400px);
+}
+
+#epg_nav_list_container {
+    left: 400px;
+    width: 400px;
+    overflow: hidden;
+}
+
+#epg_nav_time {
+    top: 14px;
+    padding: 5px 10px;
+}
+
+@media only screen and (min-width: 700px) {
+	.nav-opened #epg_nav_list_container {
+		z-index: 31;
+	}
+
+	.nav-opened.epg-loaded #epg_nav_list_container {
+		opacity: 0.9;
+	}
+}
+
+.en-prog .p-i {
+    display: none;
+}
+
+.en-prog .p-live {
+    display: block;
+}
+
+.p-drop {
+    width: 420px;
+}
+
+#epg {
+	font-size: 20px;
+}
+
+#active_group {
+	width: 160px;
+	margin-top: 18px !important;
+}
+
+.group-filter #search_field {
+	width: 164px !important;
+}
+
+#list_container_right_scrollarea {
+	padding-top: 20px;
+}
