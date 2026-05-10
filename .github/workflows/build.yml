@@ -11,24 +11,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout kode
         uses: actions/checkout@v4
 
       - name: Setup JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
-          java-version: 17
-          cache: gradle
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
 
-      - name: Fix Resource Names
+      - name: Hapus file dollar otomatis
         run: |
-          find app/src/main/res/drawable/ -name "*$*" -exec bash -c 'mv "$1" "${1//$/_}"' -- {} \;
+          find app/src/main/res/drawable/ -name "*$*" -delete || true
 
-      - name: Grant execute permission
+      - name: Beri izin eksekusi
         run: chmod +x gradlew
 
-      - name: Build Debug APK
+      - name: Build APK Debug
         run: ./gradlew assembleDebug --stacktrace
         
       - name: Upload APK
