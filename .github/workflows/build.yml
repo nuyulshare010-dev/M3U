@@ -1,4 +1,4 @@
-name: Android CI
+name: Android CI Fix
 
 on:
   workflow_dispatch:
@@ -20,26 +20,21 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Pembersihan Total Resource Ilegal
+      - name: Perbaiki Gradlew dan Resource
         run: |
-          echo "Mulai membersihkan resource bermasalah..."
+          # 1. Perbaiki file gradlew yang rusak (Line endings & Permissions)
+          sed -i 's/\r$//' gradlew
+          chmod +x gradlew
           
-          # 1. Cari semua file yang mengandung '$' dan hapus/ganti namanya secara otomatis
-          find . -name "*$*" -path "*/src/main/res/*" | while read file; do
-            new_file=$(echo "$file" | sed 's/\$/_/g')
-            mv "$file" "$new_file"
-            echo "Berhasil memperbaiki file: $file -> $new_file"
-          done
+          # 2. Hapus sisa-sisa file $ ilegal jika masih ada
+          find . -name "*$*" -path "*/src/main/res/*" -exec bash -c 'mv "$1" "${1//$/_}"' -- {} \;
           
-          # 2. Ganti semua teks di dalam file XML yang masih memanggil simbol '$'
+          # 3. Sinkronkan referensi teks di XML
           find . -type f -name "*.xml" -path "*/src/main/res/*" -exec sed -i 's/\$avd/_avd/g' {} +
           
-          echo "Pembersihan selesai."
+          echo "Perbaikan Gradlew dan Resource selesai."
 
-      - name: Beri izin eksekusi gradlew
-        run: chmod +x gradlew
-
-      - name: Build APK Debug (Clean Build)
+      - name: Build APK Clean
         run: ./gradlew clean assembleDebug --stacktrace
 
       - name: Upload APK
@@ -48,4 +43,3 @@ jobs:
         with:
           name: debug-apk
           path: app/build/outputs/apk/debug/*.apk
-          
