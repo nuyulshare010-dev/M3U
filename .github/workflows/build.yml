@@ -21,21 +21,18 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
-      - name: Perbaiki Nama Resource Ilegal secara Total
+      - name: Perbaiki Nama Resource Ilegal
         run: |
-          echo "Mulai pembersihan karakter ilegal ($)..."
-          
-          # 1. Ganti nama fisik file yang mengandung '$' menjadi '_' di seluruh folder res
-          find . -type f -name "*$*" -path "*/src/main/res/*" | while read file; do
-            newfile=$(echo "$file" | sed 's/\$/_/g')
-            mv "$file" "$newfile"
-            echo "Renamed: $file -> $newfile"
+          echo "Memulai proses pembersihan file..."
+          # 1. Cari file yang mengandung karakter $ dan ganti namanya menjadi underscore (_)
+          find . -name "*$*" -path "*/src/main/res/*" | while read file; do
+            new_file=$(echo "$file" | sed 's/\$/_/g')
+            mv "$file" "$new_file"
+            echo "Berhasil mengubah: $file menjadi $new_file"
           done
-
-          # 2. Ganti semua referensi teks di dalam file XML (misal dari @drawable/$avd ke @drawable/_avd)
-          # Ini penting agar build tidak error 'Resource not found'
-          find . -type f -name "*.xml" -path "*/src/main/res/*" -exec sed -i 's/\$avd/_avd/g' {} +
           
+          # 2. Ganti semua teks referensi di dalam file XML agar sinkron dengan nama baru
+          find . -type f -name "*.xml" -path "*/src/main/res/*" -exec sed -i 's/\$avd/_avd/g' {} +
           echo "Pembersihan selesai."
 
       - name: Beri izin eksekusi gradlew
