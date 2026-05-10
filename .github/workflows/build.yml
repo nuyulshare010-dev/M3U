@@ -1,4 +1,4 @@
-name: Android CI Clear & Build
+name: Android CI Anti-Loop
 
 on:
   workflow_dispatch:
@@ -20,33 +20,30 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      - name: Pembersihan Folder Duplikat (Verbose)
+      - name: Pembersihan Brutal (Tanpa MV)
         run: |
-          echo "Menghancurkan folder yang menyebabkan duplikasi..."
+          echo "Menghapus folder dan file hantu secara total..."
           
-          # Hapus folder drawable-ldrtl secara total (Penyebab utama error mv)
-          rm -rfv ./app/src/main/res/drawable-ldrtl-xhdpi
-          rm -rfv ./app/src/main/res/drawable-ldrtl-hdpi
-          rm -rfv ./app/src/main/res/drawable-ldrtl-mdpi
+          # 1. Hapus SEMUA folder drawable-ldrtl (Penyebab utama error bolak-balik)
+          rm -rfv ./app/src/main/res/drawable-ldrtl-*
           
-          # Hapus file hantu $ di folder anydpi
+          # 2. Hapus SEMUA file yang mengandung tanda $ (File Hantu)
           find ./app/src/main/res/ -name "*$*" -delete -print
           
-          # Hapus sisa-sisa build dari lokal
+          # 3. Hapus folder build dan cache yang mungkin terbawa saat Push
           rm -rfv ./app/build
           rm -rfv ./.gradle
           
-          echo "Isi folder drawable sekarang:"
-          ls -R ./app/src/main/res/drawable* || echo "Folder drawable kosong/tidak ada"
+          echo "Pembersihan selesai. Tidak ada folder yang dipindahkan, hanya dihapus."
 
-      - name: Build dengan Gradle 7.3.3
+      - name: Build dengan Gradle Sistem
         run: |
-          # Unduh Gradle manual untuk bypass sistem GitHub
+          # Gunakan Gradle 7.3.3 yang sudah terbukti cocok dengan project Anda
           wget -q https://services.gradle.org/distributions/gradle-7.3.3-bin.zip
           unzip -q gradle-7.3.3-bin.zip
           export PATH=$PATH:$(pwd)/gradle-7.3.3/bin
           
-          # Kompilasi Bersih
+          # Kompilasi dari nol tanpa cache lama
           gradle clean assembleDebug --stacktrace --no-daemon --no-build-cache
 
       - name: Upload APK
