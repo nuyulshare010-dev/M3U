@@ -23,18 +23,18 @@ jobs:
 
       - name: Perbaiki Nama Resource Ilegal
         run: |
-          echo "Memulai proses pembersihan file..."
-          # 1. Cari file yang mengandung karakter $ dan ganti namanya menjadi underscore (_)
-          find . -name "*$*" -path "*/src/main/res/*" | while read file; do
-            new_file=$(echo "$file" | sed 's/\$/_/g')
-            mv "$file" "$new_file"
-            echo "Berhasil mengubah: $file menjadi $new_file"
-          done
+          echo "Daftar file sebelum diperbaiki:"
+          find app/src/main/res/ -name "*$*" || echo "File tidak ditemukan"
           
-          # 2. Ganti semua teks referensi di dalam file XML agar sinkron dengan nama baru
-          find . -type f -name "*.xml" -path "*/src/main/res/*" -exec sed -i 's/\$avd/_avd/g' {} +
-          echo "Pembersihan selesai."
-
+          # Proses Rename file yang mengandung $ menjadi _
+          find app/src/main/res/ -name "*$*" -exec bash -c 'mv "$1" "${1//$/_}"' -- {} \;
+          
+          # Proses ganti teks referensi di dalam file XML
+          grep -rl "\$avd" app/src/main/res/ | xargs sed -i 's/\$avd/_avd/g' || echo "Tidak ada referensi teks yang perlu diganti"
+          
+          echo "Daftar file setelah diperbaiki:"
+          ls app/src/main/res/drawable/
+          
       - name: Beri izin eksekusi gradlew
         run: chmod +x gradlew
 
