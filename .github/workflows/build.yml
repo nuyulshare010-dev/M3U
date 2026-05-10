@@ -1,4 +1,4 @@
-name: Build APK TEST
+name: Build APK
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '11'
-          distribution: izin
+          distribution: 'temurin'
 
       - name: Beri izin eksekusi gradlew
         run: chmod +x gradlew
