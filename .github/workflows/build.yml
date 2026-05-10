@@ -21,13 +21,16 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
-      - name: Hapus Karakter Ilegal Secara Paksa
+      - name: Pembersihan File Ilegal
         run: |
-          echo "Mengecek file bermasalah..."
-          # Mencari file dengan tanda $ dan menggantinya menjadi _ secara paksa
-          find . -name "*$*" -path "*/src/main/res/*" -exec bash -c 'mv "$1" "${1//$/_}"' -- {} \;
+          echo "Mulai membersihkan nama file..."
+          # Mencari file yang mengandung $ dan menggantinya ke _
+          find . -name "*$*" -path "*/src/main/res/*" | while read f; do
+            mv "$f" "${f//$/_}"
+          done
           
-          # Mengganti isi teks di dalam XML yang masih memanggil nama file lama
+          echo "Mulai memperbaiki isi file XML..."
+          # Mengganti teks referensi di dalam XML dari $avd ke _avd
           find . -type f -name "*.xml" -path "*/src/main/res/*" -exec sed -i 's/\$avd/_avd/g' {} +
           echo "Pembersihan selesai."
 
