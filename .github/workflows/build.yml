@@ -1,4 +1,4 @@
-name: Android CI Final Solution
+name: Android CI Final Kill
 
 on:
   workflow_dispatch:
@@ -20,29 +20,26 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      - name: Pasang Gradle 7.3.3 Manual & Basmi File Hantu
+      - name: Basmi Gradlew Rusak & File Hantu
         run: |
-          # 1. Unduh Gradle 7.3.3 secara manual (Bypass sistem GitHub)
+          # 1. Hapus gradlew bawaan yang bermasalah izinnya
+          rm -f gradlew
+          
+          # 2. Pasang Gradle 7.3.3 segar dari sistem
           wget -q https://services.gradle.org/distributions/gradle-7.3.3-bin.zip
           unzip -q gradle-7.3.3-bin.zip
           export PATH=$PATH:$(pwd)/gradle-7.3.3/bin
           
-          # 2. Buat wrapper baru yang sesuai dengan versi ini
-          gradle wrapper --gradle-version 7.3.3
-          chmod +x gradlew
-          
-          # 3. Hapus file hantu ($) di folder resource
+          # 3. Hapus paksa semua file yang mengandung $ (File Hantu)
           find . -name "*$*" -path "*/src/main/res/*" -delete
           
-          # 4. Perbaiki teks error $avd di XML
+          # 4. Sinkronkan teks referensi di XML
           find . -type f -name "*.xml" -path "*/src/main/res/*" -exec sed -i 's/\$avd/avd/g' {} +
           
-          echo "Pembersihan selesai menggunakan Gradle 7.3.3 manual."
-
-      - name: Build APK Debug
-        run: |
-          # Paksa build tanpa cache agar file hantu benar-benar hilang
-          ./gradlew clean assembleDebug --stacktrace --no-daemon --no-build-cache
+          # 5. Jalankan build langsung menggunakan gradle yang baru diunduh
+          gradle clean assembleDebug --stacktrace --no-daemon --no-build-cache
+          
+          echo "Build selesai tanpa menggunakan gradlew bawaan repo."
 
       - name: Upload APK
         if: success()
