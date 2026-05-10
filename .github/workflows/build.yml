@@ -1,4 +1,4 @@
-name: Android CI Final Fix
+name: Android CI Fix Gradlew
 
 on:
   workflow_dispatch:
@@ -20,23 +20,24 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Bersihkan Resource dan Cache
+      - name: Generate Gradlew & Bersihkan Resource
         run: |
-          # Hapus paksa file dengan karakter ilegal $
+          # 1. Pasang ulang Gradle Wrapper jika hilang
+          gradle wrapper
+          chmod +x gradlew
+          
+          # 2. Hapus paksa file yang mengandung karakter ilegal $
           find . -name "*$*" -delete
           
-          # Perbaiki referensi teks ilegal di file XML
+          # 3. Sinkronkan teks referensi di XML
           find . -type f -name "*.xml" -exec sed -i 's/\$avd/avd/g' {} +
           
-          # Hapus cache gradle yang mungkin menyimpan library yang korup
-          rm -rf ~/.gradle/caches/
-          echo "Pembersihan cache selesai."
-
-      - name: Beri izin eksekusi gradlew
-        run: chmod +x gradlew
+          echo "Gradlew telah dibuat dan resource dibersihkan."
 
       - name: Build APK Clean
-        run: ./gradlew clean assembleDebug --stacktrace --no-daemon
+        run: |
+          # Pastikan compileSdk di build.gradle adalah 34
+          ./gradlew clean assembleDebug --stacktrace --no-daemon --no-build-cache
 
       - name: Upload APK
         if: success()
