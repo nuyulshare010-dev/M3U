@@ -1,4 +1,4 @@
-name: Android CI Final Kill
+name: Android CI Final Solution
 
 on:
   workflow_dispatch:
@@ -14,30 +14,34 @@ jobs:
       - name: Checkout kode
         uses: actions/checkout@v4
 
-      - name: Setup JDK 17
+      - name: Setup JDK 11
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '11'
 
-      - name: Basmi File Hantu dan Set Gradle
+      - name: Pasang Gradle 7.3.3 Manual & Basmi File Hantu
         run: |
-          # 1. Paksa versi Gradle yang stabil untuk project Anda
+          # 1. Unduh Gradle 7.3.3 secara manual (Bypass sistem GitHub)
+          wget -q https://services.gradle.org/distributions/gradle-7.3.3-bin.zip
+          unzip -q gradle-7.3.3-bin.zip
+          export PATH=$PATH:$(pwd)/gradle-7.3.3/bin
+          
+          # 2. Buat wrapper baru yang sesuai dengan versi ini
           gradle wrapper --gradle-version 7.3.3
           chmod +x gradlew
           
-          # 2. Hapus fisik semua file yang mengandung $ di folder res
-          # Ini adalah langkah 'brutal' agar file tidak kembali saat build
+          # 3. Hapus file hantu ($) di folder resource
           find . -name "*$*" -path "*/src/main/res/*" -delete
           
-          # 3. Ganti rujukan teks $ di dalam file XML agar tidak error
+          # 4. Perbaiki teks error $avd di XML
           find . -type f -name "*.xml" -path "*/src/main/res/*" -exec sed -i 's/\$avd/avd/g' {} +
           
-          echo "Pembersihan total selesai."
+          echo "Pembersihan selesai menggunakan Gradle 7.3.3 manual."
 
-      - name: Build APK Tanpa Ampun
+      - name: Build APK Debug
         run: |
-          # --no-build-cache memastikan tidak ada 'ingatan' file lama
+          # Paksa build tanpa cache agar file hantu benar-benar hilang
           ./gradlew clean assembleDebug --stacktrace --no-daemon --no-build-cache
 
       - name: Upload APK
