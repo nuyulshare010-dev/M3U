@@ -19,26 +19,19 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
-      - name: Pembersihan File Ilegal
+      - name: Pembersihan Paksa Resource
         run: |
-          echo "Mulai membersihkan nama file..."
-          # Mencari file yang mengandung $ dan menggantinya ke _
-          find . -name "*$*" -path "*/src/main/res/*" | while read f; do
-            mv "$f" "${f//$/_}"
-          done
+          # Pastikan tidak ada lagi file dengan simbol $
+          find app/src/main/res/ -name "*$*" -exec bash -c 'mv "$1" "${1//$/_}"' -- {} \; || echo "Tidak ada file $ ditemukan"
           
-          echo "Mulai memperbaiki isi file XML..."
-          # Mengganti teks referensi di dalam XML dari $avd ke _avd
-          find . -type f -name "*.xml" -path "*/src/main/res/*" -exec sed -i 's/\$avd/_avd/g' {} +
-          echo "Pembersihan selesai."
-
-      - name: Beri izin eksekusi gradlew
-        run: chmod +x gradlew
-
-      - name: Build APK Debug
-        run: ./gradlew assembleDebug --stacktrace
+          # Ganti teks rujukan di dalam file XML secara otomatis
+          find app/src/main/res/ -type f -name "*.xml" -exec sed -i 's/\$avd/avd/g' {} +
+          
+      - name: Build Bersih (Clean Build)
+        run: |
+          chmod +x gradlew
+          ./gradlew clean assembleDebug --stacktrace
 
       - name: Upload APK
         if: success()
@@ -46,3 +39,4 @@ jobs:
         with:
           name: debug-apk
           path: app/build/outputs/apk/debug/*.apk
+          
