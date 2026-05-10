@@ -21,20 +21,16 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
-      - name: Perbaiki Nama Resource Ilegal
+      - name: Hapus Karakter Ilegal Secara Paksa
         run: |
-          echo "Daftar file sebelum diperbaiki:"
-          find app/src/main/res/ -name "*$*" || echo "File tidak ditemukan"
+          echo "Mengecek file bermasalah..."
+          # Mencari file dengan tanda $ dan menggantinya menjadi _ secara paksa
+          find . -name "*$*" -path "*/src/main/res/*" -exec bash -c 'mv "$1" "${1//$/_}"' -- {} \;
           
-          # Proses Rename file yang mengandung $ menjadi _
-          find app/src/main/res/ -name "*$*" -exec bash -c 'mv "$1" "${1//$/_}"' -- {} \;
-          
-          # Proses ganti teks referensi di dalam file XML
-          grep -rl "\$avd" app/src/main/res/ | xargs sed -i 's/\$avd/_avd/g' || echo "Tidak ada referensi teks yang perlu diganti"
-          
-          echo "Daftar file setelah diperbaiki:"
-          ls app/src/main/res/drawable/
-          
+          # Mengganti isi teks di dalam XML yang masih memanggil nama file lama
+          find . -type f -name "*.xml" -path "*/src/main/res/*" -exec sed -i 's/\$avd/_avd/g' {} +
+          echo "Pembersihan selesai."
+
       - name: Beri izin eksekusi gradlew
         run: chmod +x gradlew
 
