@@ -1,4 +1,4 @@
-name: Android CI Anti-Hantu
+name: Android CI Debug Clear
 
 on:
   workflow_dispatch:
@@ -20,30 +20,33 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      - name: Basmi File Hantu Secara Paksa
+      - name: Eksekusi Penghapusan Resource Bermasalah
         run: |
-          echo "Memulai pembersihan resource ilegal..."
+          echo "Mulai membersihkan resource yang menyebabkan error..."
           
-          # 1. Hapus SEMUA file yang memiliki karakter $ di folder res
-          # Ini adalah perintah paling kuat untuk memastikan mereka tidak ikut build
-          find . -name "*$*" -path "*/src/main/res/*" -exec rm -rf {} +
+          # 1. Hapus folder drawable-ldrtl yang menyebabkan error mv (dengan log terlihat)
+          rm -rfv ./app/src/main/res/drawable-ldrtl-xhdpi
+          rm -rfv ./app/src/main/res/drawable-ldrtl-hdpi
+          rm -rfv ./app/src/main/res/drawable-ldrtl-mdpi
           
-          # 2. Hapus file hantu spesifik yang sering muncul di log Anda
-          rm -f app/src/main/res/drawable-ldrtl-xhdpi/abc_spinner_mtrl_am_alpha.9.png
-          rm -f app/src/main/res/drawable-anydpi-v21/\$avd_show_password__0.xml
-          rm -f app/src/main/res/drawable-anydpi-v21/\$avd_show_password__1.xml
-          rm -f app/src/main/res/drawable-anydpi-v21/\$avd_hide_password__0.xml
-          rm -f app/src/main/res/drawable-anydpi-v21/\$avd_hide_password__1.xml
+          # 2. Hapus file hantu $avd di folder anydpi (dengan log terlihat)
+          rm -fv ./app/src/main/res/drawable-anydpi-v21/\$*
+          
+          # 3. Hapus folder build lama jika terbawa dari lokal
+          rm -rfv ./app/build
+          rm -rfv ./.gradle
+          
+          echo "Pembersihan total selesai."
 
-          # 3. Bersihkan sisa teks referensi ilegal di file XML
-          find . -type f -name "*.xml" -path "*/src/main/res/*" -exec sed -i 's/\$avd/avd/g' {} +
-          
-          echo "Pembersihan selesai."
-
-      - name: Build Menggunakan Gradle Sistem
+      - name: Pasang Gradle 7.3.3 & Build
         run: |
-          # Gunakan gradle sistem agar tidak terhambat izin gradlew
-          gradle clean assembleDebug --stacktrace --no-daemon --no-build-cache
+          # Menggunakan Gradle sistem untuk menghindari masalah izin gradlew
+          wget -q https://services.gradle.org/distributions/gradle-7.3.3-bin.zip
+          unzip -q gradle-7.3.3-bin.zip
+          export PATH=$PATH:$(pwd)/gradle-7.3.3/bin
+          
+          # Jalankan build bersih
+          gradle clean assembleDebug --stacktrace --no-daemon
 
       - name: Upload APK
         if: success()
@@ -51,3 +54,4 @@ jobs:
         with:
           name: debug-apk
           path: app/build/outputs/apk/debug/*.apk
+k
