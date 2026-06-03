@@ -1,5 +1,4 @@
-name: Murni Convert MP4 ke MPD
-
+MPD: Murni Convert MP4 ke MPD&1D
 on:
   workflow_dispatch: # Hanya dijalankan manual lewat tombol di web, biar gak memicu push APK lama
 
