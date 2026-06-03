@@ -3,34 +3,34 @@ name: Convert MP4 to MPD (MPEG-DASH)
 on:
   push:
     branches:
-      - main  # Jalankan otomatis saat ada push ke branch main
-  workflow_dispatch: # Memungkinkan Anda menjalankan workflow ini secara manual
+      - main
+  workflow_dispatch:
 
 jobs:
-  convert:
+  convert-video:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Ambil kode dan file dari repositori
+    # 1. Ambil file video dari repositori Anda
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    # 2. Install FFmpeg di runner Ubuntu
+    # 2. Install FFmpeg di dalam server GitHub Actions
     - name: Install FFmpeg
       run: |
         sudo apt-get update
         sudo apt-get install -y ffmpeg
 
-    # 3. Proses Konversi MP4 ke MPD
-    # Ganti 'video-input.mp4' sesuai nama file video Anda di repositori
-    - name: Convert MP4 to MPD
+    # 3. Proses konversi MP4 ke MPD (Ubah 'video-input.mp4' sesuai nama file Anda)
+    - name: Convert MP4 to MPD via FFmpeg
       run: |
         mkdir -p dash-output
-        ffmpeg -i video-input.mp4 -c:v copy -c:a copy -f dash dash-output/stream.mpd
+        ffmpeg -i iklan.mp4 -c:v copy -c:a copy -f dash dash-output/stream.mpd
 
-    # 4. Simpan hasilnya agar bisa diunduh (Artifact)
+    # 4. Upload hasilnya agar bisa Anda unduh langsung dari GitHub
     - name: Upload DASH Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: dash-video-package
         path: dash-output/
+
