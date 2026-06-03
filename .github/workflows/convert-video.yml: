@@ -7,30 +7,30 @@ on:
   workflow_dispatch:
 
 jobs:
-  mpeg-dash-conversion:
+  convert-video:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Ambil file video dari repositori Anda
+    # 1. Ambil file video dari repo
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    # 2. Pasang FFmpeg langsung ke dalam server Ubuntu
-    - name: Install FFmpeg Tools
+    # 2. Install FFmpeg aja, gak pake Java, gak pake Gradle
+    - name: Install FFmpeg
       run: |
         sudo apt-get update
         sudo apt-get install -y ffmpeg
 
-    # 3. Proses konversi video MP4 menjadi manifes MPD beserta segmennya
-    # Pastikan file 'video-input.mp4' ada di root direktori repositori Anda atau ubah namanya sesuai file Anda
-    - name: Process Video Encoding
+    # 3. Proses konversi video
+    # JANGAN LUPA: Ganti 'video-input.mp4' dengan nama file video asli di repo Anda
+    - name: Convert MP4 to MPD via FFmpeg
       run: |
         mkdir -p dash-output
         ffmpeg -i iklan.mp4 -c:v copy -c:a copy -f dash dash-output/stream.mpd
 
-    # 4. Simpan folder hasil ekspor agar bisa diunduh langsung
-    - name: Save DASH Output Artifacts
+    # 4. Bungkus hasilnya jadi ZIP biar bisa didownload
+    - name: Upload DASH Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: dash-stream-package
+        name: dash-video-package
         path: dash-output/
