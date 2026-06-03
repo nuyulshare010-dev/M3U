@@ -11,24 +11,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Ambil file video dari repo
+    # 1. Tarik file dari repositori GitHub Anda
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    # 2. Install FFmpeg aja, gak pake Java, gak pake Gradle
+    # 2. Install FFmpeg ke server Ubuntu (Murni tanpa Java / Gradle)
     - name: Install FFmpeg
       run: |
         sudo apt-get update
         sudo apt-get install -y ffmpeg
 
-    # 3. Proses konversi video
-    # JANGAN LUPA: Ganti 'video-input.mp4' dengan nama file video asli di repo Anda
+    # 3. Proses konversi MP4 ke MPD memakai FFmpeg
+    # PENTING: Ganti 'video-input.mp4' di bawah dengan nama file video asli Anda di repo
     - name: Convert MP4 to MPD via FFmpeg
       run: |
         mkdir -p dash-output
         ffmpeg -i iklan.mp4 -c:v copy -c:a copy -f dash dash-output/stream.mpd
 
-    # 4. Bungkus hasilnya jadi ZIP biar bisa didownload
+    # 4. Upload hasilnya agar bisa Anda download dalam bentuk ZIP
     - name: Upload DASH Artifacts
       uses: actions/upload-artifact@v4
       with:
