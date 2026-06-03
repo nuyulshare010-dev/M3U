@@ -1,4 +1,4 @@
-name: Murni Convert MP4 ke MPD
+name: Convert MP4 ke MPD Murni
 
 on:
   push:
@@ -11,24 +11,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Tarik file video dari repositori lu
+    # 1. Ambil file video dari repositori
     - name: Ambil File Repo
       uses: actions/checkout@v4
 
-    # 2. Pasang FFmpeg (Murni tanpa Java, tanpa Gradle, tanpa Android)
+    # 2. Install FFmpeg murni (Bukan Java, Bukan Gradle)
     - name: Pasang FFmpeg Tools
       run: |
         sudo apt-get update
         sudo apt-get install -y ffmpeg
 
     # 3. Proses konversi MP4 ke MPD
-    # PENTING: Ganti 'video-input.mp4' dengan nama file video asli lu yang ada di repo
+    # GANTI 'video-input.mp4' dengan nama file video asli lu yang ada di repo
     - name: Eksekusi FFmpeg ke MPD
       run: |
         mkdir -p hasil-dash
         ffmpeg -i iklan.mp4 -c:v copy -c:a copy -f dash hasil-dash/stream.mpd
 
-    # 4. Upload folder hasil konversi biar bisa lu download berupa ZIP
+    # 4. Upload hasilnya dalam bentuk ZIP
     - name: Simpan Paket MPD
       uses: actions/upload-artifact@v4
       with:
