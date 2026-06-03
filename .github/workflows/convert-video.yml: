@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Ambil file video dari repo lu
-    - name: Ambil Kode Repo
+    # 1. Tarik file video dari repositori lu
+    - name: Ambil File Repo
       uses: actions/checkout@v4
 
-    # 2. Install FFmpeg murni (Tanpa Java, Tanpa Gradle, Tanpa Android)
+    # 2. Pasang FFmpeg (Murni tanpa Java, tanpa Gradle, tanpa Android)
     - name: Pasang FFmpeg Tools
       run: |
         sudo apt-get update
@@ -28,7 +28,7 @@ jobs:
         mkdir -p hasil-dash
         ffmpeg -i iklan.mp4 -c:v copy -c:a copy -f dash hasil-dash/stream.mpd
 
-    # 4. Upload hasilnya biar bisa lu download berupa ZIP
+    # 4. Upload folder hasil konversi biar bisa lu download berupa ZIP
     - name: Simpan Paket MPD
       uses: actions/upload-artifact@v4
       with:
